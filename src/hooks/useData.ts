@@ -7,10 +7,7 @@ interface FetchResponse<T> {
     results: T[];
 }
 
-const useData = <T>(
-    endpoint: string,
-    requestConfig?: AxiosRequestConfig
-) => {
+const useData = <T>(endpoint: string, requestConfig?: AxiosRequestConfig, deps?: any[]) => {
     const [data, setData] = useState<T[]>([]);
     const [error, setError] = useState("");
     const [isLoading, setLoading] = useState(false);
@@ -27,12 +24,12 @@ const useData = <T>(
             })
             .catch((err) => {
                 if (err instanceof CanceledError) return;
-                setError(err.message);
+                setError(err.message)
                 setLoading(false);
             });
 
         return () => controller.abort();
-    }, [endpoint, requestConfig]);
+    }, deps ? [...deps] : []);
 
     return { data, error, isLoading };
 };
